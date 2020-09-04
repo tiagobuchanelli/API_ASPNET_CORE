@@ -17,10 +17,11 @@ namespace Lojax.Models
         [DataType("int")]
         public int ProductId { get; set; }
 
-        [Column("OPERATION_ID")]
-        [Required(ErrorMessage = "Este campo é obrigatorio")]
+        [Column("ORIGIN_STATUS")] //1= VENDAS, 2= COMPRAS, 3= OUTROS
+        [Required(ErrorMessage = "ID Status - Este campo é obrigatorio")]
+        [Range(1, 3, ErrorMessage = "Origem Invalida - Os valores devem ser 1,2 ou 3")]
         [DataType("int")]
-        public int OperationId { get; set; }
+        public int OriginStatus { get; set; }
 
         [Column("DATE_MOV")]
         [Required(ErrorMessage = "Obrigatório informar uma data.")]
@@ -35,6 +36,6 @@ namespace Lojax.Models
 
         //objetos completos
         public Product Product { get; set; }
-        public OperationFinance Operation { get; set; }
+
     }
 }

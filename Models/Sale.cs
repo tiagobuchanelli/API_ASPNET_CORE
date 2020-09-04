@@ -40,6 +40,7 @@ namespace Lojax.Models
         [DataType("int")]
         public int PaymentId { get; set; }
 
+
         [Column("NOTE")]
         [MaxLength(100, ErrorMessage = "Este campo deve conter no máximo 100 caracteres")]
         [DataType("varchar")]
@@ -59,6 +60,9 @@ namespace Lojax.Models
         public Entity Costumer { get; set; }
 
         public PaymentMethod Payment { get; set; }
+
+        public FinanceApAr FinanceAr { get; set; }
+
 
 
     }

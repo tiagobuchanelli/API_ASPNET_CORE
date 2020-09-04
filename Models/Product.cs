@@ -39,6 +39,7 @@ namespace Lojax.Models
 
 
         [Column("ID_CAT")]
+        [Required(ErrorMessage = "Price - Este campo é obrigatorio")]
         [DataType("int")]
         public int CategoryId { get; set; }
 

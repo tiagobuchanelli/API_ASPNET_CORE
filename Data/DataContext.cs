@@ -16,7 +16,6 @@ namespace Lojax.Data
         public DbSet<Entity> Entities { get; set; }
         public DbSet<FinanceApAr> FinanceApArs { get; set; }
         public DbSet<FinanceInstallment> FinanceInstallments { get; set; }
-        public DbSet<OperationFinance> OperationFinance { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Sale> Sales { get; set; }

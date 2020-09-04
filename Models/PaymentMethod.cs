@@ -9,7 +9,7 @@ namespace Lojax.Models
     {
         [Key]
         [Column("ID")] //renomear a tabela no banco.
-        public int IdProduct { get; set; }
+        public int Id { get; set; }
 
 
         [Column("DESC")]
@@ -22,9 +22,15 @@ namespace Lojax.Models
 
         [Column("INTERVAL")]
         [Required(ErrorMessage = "Este campo é obrigatório")] //como tem MinLength não seria necessario
-        [Range(1, 999999, ErrorMessage = "Intervalo deve ser maior que zero")]
+        [Range(1, 999, ErrorMessage = "Intervalo deve ser maior que zero")]
         [DataType("int")]
         public int Interval { get; set; }
+
+        [Column("REPEAT_NR")]
+        [Required(ErrorMessage = "Este campo é obrigatório")] //como tem MinLength não seria necessario
+        [Range(1, 999, ErrorMessage = "Número de repetições deve ser maior que zero")]
+        [DataType("int")]
+        public int RepeatNr { get; set; }
 
 
         [Column("DATE_CREATED")]

@@ -8,8 +8,8 @@ namespace Lojax.Models
     public class Stock
     {
         [Key]
-        [Column("ID_PRODUCT")] //renomear a tabela no banco.
-        public int IdProduct { get; set; }
+        [Column("PROD_ID")] //renomear a tabela no banco.
+        public int ProductId { get; set; }
 
 
         [Column("QUANTITY")]

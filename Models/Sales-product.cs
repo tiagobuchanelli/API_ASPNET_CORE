@@ -21,7 +21,7 @@ namespace Lojax.Models
         [Column("SALE_ID")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
-        public int SaletId { get; set; }
+        public int SaleId { get; set; }
 
         [Column("QUANTITY")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
@@ -41,7 +41,13 @@ namespace Lojax.Models
         [DataType("decimal")]
         public decimal Total { get; set; }
 
+        [Column("DATE_CREATED")]
+        [Required(ErrorMessage = "Este campo é obrigatorio")]
+        public DateTime DateCreated { get; set; }
 
+        [Column("DATE_UPDATE")]
+        [Required(ErrorMessage = "Este campo é obrigatorio")]
+        public DateTime DateUpdate { get; set; }
 
         //objetos completos
         public Sale Sale { get; set; }
