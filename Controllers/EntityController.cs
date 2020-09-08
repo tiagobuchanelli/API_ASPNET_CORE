@@ -5,47 +5,51 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lojax.Data;
 using Lojax.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lojax.Controllers
 {
-    [Route("v1/costumers")]
-    public class CostumerController : ControllerBase
+    [Route("v1/entities")]
+    public class EntityController : ControllerBase
     {
 
         //=======GET=======
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<List<Entity>>> Get([FromServices] DataContext context)
         {
 
-            var costumers = await context.Entities.AsNoTracking().ToListAsync();
+            var entities = await context.Entities.AsNoTracking().ToListAsync();
 
-            if (costumers.Count == 0)
-                return NotFound(new { message = "Nenhum cliente encontrado." });
+            if (entities.Count == 0)
+                return NotFound(new { message = "Nenhum usuário encontrado." });
 
-            return Ok(costumers);
+            return Ok(entities);
         }
 
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Entity>> GetByID(
             int id,
             [FromServices] DataContext context)
         {
 
-            var costumer = await context.Entities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            if (costumer == null)
-                return NotFound(new { message = "Cliente não encontrado" });
+            var entity = await context.Entities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+                return NotFound(new { message = "Usuário não encontrado" });
 
 
-            return Ok(costumer);
+            return Ok(entity);
 
         }
 
         //=======POST=======
         [HttpPost]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<Entity>> Post(
             [FromBody] Entity model,
             [FromServices] DataContext context)
@@ -55,6 +59,7 @@ namespace Lojax.Controllers
                 //Valida o model
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+
 
                 //Add Categoria
                 context.Entities.Add(model);
@@ -75,6 +80,7 @@ namespace Lojax.Controllers
         //=======PUT=======
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Entity>> Put(
             int id,
             [FromBody] Entity model,
@@ -84,11 +90,12 @@ namespace Lojax.Controllers
             {
                 //valida ID da categoria
                 if (id != model.Id)
-                    return NotFound(new { message = "Cliente não encontrado" });
+                    return NotFound(new { message = "Usuário não encontrado" });
 
                 //Valida o model
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+
 
                 //Atualizar Categoria
                 context.Entry<Entity>(model).State = EntityState.Modified;
@@ -105,7 +112,7 @@ namespace Lojax.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível atualizar o cliente" });
+                return BadRequest(new { message = "Não foi possível atualizar o usuário" });
             }
         }
 

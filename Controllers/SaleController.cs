@@ -17,6 +17,7 @@ namespace Lojax.Controllers
         //======Get============
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<List<Sale>>> Get([FromServices] DataContext context)
         {
 
@@ -37,6 +38,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Sale>> GetById(
             int id,
             [FromServices] DataContext context)
@@ -59,6 +61,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("entity/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<List<Sale>>> GetByEntity(
             int id,
             [FromServices] DataContext context)
@@ -83,6 +86,7 @@ namespace Lojax.Controllers
         //======Post============
         [HttpPost]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<Sale>> Post(
            [FromBody] Sale model,
            [FromServices] DataContext context
@@ -108,6 +112,7 @@ namespace Lojax.Controllers
         //======Put============
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Sale>> Put(
             int id,
             [FromBody] Sale model,
@@ -144,6 +149,7 @@ namespace Lojax.Controllers
         //======DELETE============
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Sale>> Delete(
             [FromServices] DataContext context,
             int id)

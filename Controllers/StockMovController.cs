@@ -10,83 +10,59 @@ using System;
 
 namespace Lojax.Controllers
 {
-    [Route("v1/finance")]
-    public class FinanceController : ControllerBase
+    [Route("v1/stock-mov")]
+    public class StockMovController : ControllerBase
     {
+
 
         //======Get============
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<List<FinanceApAr>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<StockMov>>> Get([FromServices] DataContext context)
         {
 
-            var finances = await context
-            .FinanceApArs
-            .Include(x => x.Entity)
+            var stockMov = await context
+            .StockMovs
+            .Include(x => x.Product)
             .AsNoTracking()
             .ToListAsync();
 
-            if (finances.Count == 0)
-                return NotFound(new { message = "Nenhuma conta encontrada" });
+            if (stockMov.Count == 0)
+                return NotFound(new { message = "Nenhum estoque encontrado" });
 
 
-            return Ok(finances);
+            return Ok(stockMov);
 
         }
 
         [HttpGet]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<FinanceApAr>> GetById(
+        public async Task<ActionResult<StockMov>> GetById(
             int id,
             [FromServices] DataContext context)
         {
 
-            var finance = await context
-            .FinanceApArs
-            .Include(x => x.Entity)
+            var stockMov = await context
+            .StockMovs
+           .Include(x => x.Product)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (finance == null)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+            if (stockMov == null)
+                return NotFound(new { message = "Nenhum estoque encontrado" });
 
-            return Ok(finance);
-
-        }
-
-
-        [HttpGet]
-        [Route("entity/{id:int}")]
-        [Authorize]
-        public async Task<ActionResult<List<FinanceApAr>>> GetByEntity(
-            int id,
-            [FromServices] DataContext context)
-        {
-            var finance = await context
-            .FinanceApArs
-            .Include(x => x.Entity)
-            .AsNoTracking()
-            .Where(x => x.EntityId == id)
-            .ToListAsync();
-
-            if (finance.Count == 0)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
-
-
-            return Ok(finance);
+            return Ok(stockMov);
 
         }
-
 
         //======Post============
-
         [HttpPost]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<FinanceApAr>> Post(
-           [FromBody] FinanceApAr model,
+        public async Task<ActionResult<StockMov>> Post(
+           [FromBody] StockMov model,
            [FromServices] DataContext context
        )
         {
@@ -96,7 +72,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Add + Salvar DB
-                context.FinanceApArs.Add(model);
+                context.StockMovs.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
@@ -111,9 +87,9 @@ namespace Lojax.Controllers
         [HttpPut]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<FinanceApAr>> Put(
+        public async Task<ActionResult<StockMov>> Put(
             int id,
-            [FromBody] FinanceApAr model,
+            [FromBody] StockMov model,
             [FromServices] DataContext context)
         {
             try
@@ -127,7 +103,7 @@ namespace Lojax.Controllers
                     return BadRequest(model);
 
                 //Update DB
-                context.Entry<FinanceApAr>(model).State = EntityState.Modified;
+                context.Entry<StockMov>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
                 return Ok(model); //poderia retornar uma mensagem de sucesso.
@@ -144,5 +120,30 @@ namespace Lojax.Controllers
             }
         }
 
+        //======DELETE============
+        [HttpDelete]
+        [Route("{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<StockMov>> Delete(
+            [FromServices] DataContext context,
+            int id)
+        {
+            var stockMov = await context.StockMovs.FirstOrDefaultAsync(x => x.Id == id);
+            if (stockMov == null)
+                return NotFound(new { message = "Lançamento não encontrada" });
+
+            try
+            {
+                context.StockMovs.Remove(stockMov);
+                await context.SaveChangesAsync();
+                return stockMov;
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível remover o lançamento" });
+
+            }
+        }
     }
+
 }

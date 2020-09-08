@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lojax.Data;
 using Lojax.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using Lojax.Services;
 
 namespace Lojax.Controllers
 {
@@ -15,6 +18,7 @@ namespace Lojax.Controllers
         //=======GET=======
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<List<User>>> Get([FromServices] DataContext context)
         {
 
@@ -29,6 +33,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetByID(
             int id,
             [FromServices] DataContext context)
@@ -46,6 +51,7 @@ namespace Lojax.Controllers
         //=======POST=======
         [HttpPost]
         [Route("")]
+        [AllowAnonymous]
         public async Task<ActionResult<User>> Post(
             [FromBody] User model,
             [FromServices] DataContext context)
@@ -72,10 +78,39 @@ namespace Lojax.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate(
+            [FromServices] DataContext context,
+            [FromBody] User model)
+        {
+            var user = await context.Users
+                .AsNoTracking()
+                .Where(x => x.Username == model.Username && x.Password == model.Password)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return NotFound(new { message = "Usuário ou senha inválido" });
+
+            var token = TokenService.GenerateToken(user);
+
+
+            //Depois que fizer o login e der certo, esta sendo retornado um novo objeto com os dados do usuario e o token gerado
+            //Se retornar apenas o user, vem inclusive a senha, mas pode ser ocultado.
+            model.Password = "";
+            return new
+            {
+                user = user.Name,
+                token = token
+            };
+        }
+
 
         //=======PUT=======
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<User>> Put(
             int id,
             [FromBody] User model,

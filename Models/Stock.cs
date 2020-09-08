@@ -8,7 +8,12 @@ namespace Lojax.Models
     public class Stock
     {
         [Key]
-        [Column("PROD_ID")] //renomear a tabela no banco.
+        [Column("ID")]
+        public int Id { get; set; }
+
+        [Column("PROD_ID")]
+        [Required(ErrorMessage = "Este campo é obrigatorio")]
+        [DataType("int")]
         public int ProductId { get; set; }
 
 

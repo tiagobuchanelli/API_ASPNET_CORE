@@ -16,6 +16,7 @@ namespace Lojax.Controllers
         //======Get============
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<List<FinanceInstallment>>> Get([FromServices] DataContext context)
         {
 
@@ -36,6 +37,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<FinanceInstallment>> GetById(
             int id,
             [FromServices] DataContext context)
@@ -57,6 +59,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("doc/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<List<FinanceInstallment>>> GetByDoc(
             int id,
             [FromServices] DataContext context)
@@ -79,6 +82,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("entity/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<List<FinanceInstallment>>> GetByEntity(
             int id,
             [FromServices] DataContext context)
@@ -104,6 +108,7 @@ namespace Lojax.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<FinanceInstallment>> Post(
            [FromBody] FinanceInstallment model,
            [FromServices] DataContext context
@@ -129,6 +134,7 @@ namespace Lojax.Controllers
         //======Put============
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<FinanceInstallment>> Put(
             int id,
             [FromBody] FinanceInstallment model,

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lojax.Data;
 using Lojax.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lojax.Controllers
 {
@@ -14,6 +15,7 @@ namespace Lojax.Controllers
         //=======GET=======
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<List<PaymentMethod>>> Get([FromServices] DataContext context)
         {
 
@@ -28,6 +30,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<PaymentMethod>> GetByID(
             int id,
             [FromServices] DataContext context)
@@ -45,6 +48,7 @@ namespace Lojax.Controllers
         //=======POST=======
         [HttpPost]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<PaymentMethod>> Post(
             [FromBody] PaymentMethod model,
             [FromServices] DataContext context)
@@ -74,6 +78,7 @@ namespace Lojax.Controllers
         //=======PUT=======
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<PaymentMethod>> Put(
             int id,
             [FromBody] PaymentMethod model,

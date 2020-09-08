@@ -18,6 +18,7 @@ namespace Lojax.Controllers
         //======Get============
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
         {
 
@@ -38,6 +39,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Product>> GetById(
             int id,
             [FromServices] DataContext context)
@@ -59,6 +61,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("categories/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<List<Product>>> GetByCategory(
             int id,
             [FromServices] DataContext context)
@@ -83,6 +86,7 @@ namespace Lojax.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize]
         public async Task<ActionResult<Product>> Post(
             [FromBody] Product model,
             [FromServices] DataContext context
@@ -111,6 +115,7 @@ namespace Lojax.Controllers
         //======Put============
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<Product>> Put(
             int id,
             [FromBody] Product model,
