@@ -45,6 +45,9 @@ namespace Lojax.Models
         [DataType("int")]
         public int Status { get; set; }
 
+        [Column("ROLE")]
+        public string Role { get; set; }
+
 
         [Column("DATE_CREATED")]
         public DateTime DateCreated { get; set; }

@@ -101,7 +101,7 @@ namespace Lojax.Controllers
             model.Password = "";
             return new
             {
-                user = user.Name,
+                user = user,
                 token = token
             };
         }

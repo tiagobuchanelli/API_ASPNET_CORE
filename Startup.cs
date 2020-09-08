@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Text;
-using Lojax;
 using Lojax.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LOJAX
+namespace Lojax
 {
     public class Startup
     {
@@ -62,8 +61,8 @@ namespace LOJAX
             });
 
             //------BANCO DE DADOS----------- 
-            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database"));
-            //services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString"))); 
+            //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database"));
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,8 +83,9 @@ namespace LOJAX
             .AllowAnyMethod()
             .AllowAnyHeader());
 
-            app.UseAuthorization();
+
             app.UseAuthentication(); //Habilitar para utilizar Roles de um usuário.
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
