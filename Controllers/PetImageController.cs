@@ -10,126 +10,126 @@ using System;
 
 namespace Lojax.Controllers
 {
-    [Route("v1/sales")]
-    public class SaleController : ControllerBase
+
+    [Route("v1/pets-image")]
+    public class PetImageController : ControllerBase
     {
 
         //======Get============
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<List<Sale>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<PetImage>>> Get([FromServices] DataContext context)
         {
 
-            var sales = await context
-            .Sales
-            .Include(x => x.Costumer)
-            .Include(x => x.Payment)
+            var petI = await context
+            .PetImages
             .AsNoTracking()
             .ToListAsync();
 
-            if (sales.Count == 0)
-                return NotFound(new { message = "Nenhuma venda encontrada" });
+            if (petI.Count == 0)
+                return NotFound(new { message = "Nenhuma imagem encontrada" });
 
 
-            return Ok(sales);
+            return Ok(petI);
 
         }
+
 
         [HttpGet]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Sale>> GetById(
+        public async Task<ActionResult<PetImage>> GetById(
             int id,
             [FromServices] DataContext context)
         {
 
-            var sale = await context
-            .Sales
-            .Include(x => x.Costumer)
-            .Include(x => x.Payment)
+            var petI = await context
+            .PetImages
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (sale == null)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+            if (petI == null)
+                return NotFound(new { message = "Nenhuma imagem encontrada" });
 
-            return Ok(sale);
+            return Ok(petI);
 
         }
 
 
         [HttpGet]
-        [Route("entity/{id:int}")]
+        [Route("pets/{id:int}")]
         [Authorize]
-        public async Task<ActionResult<List<Sale>>> GetByEntity(
+        public async Task<ActionResult<List<PetImage>>> GetByCategory(
             int id,
             [FromServices] DataContext context)
         {
-            var sales = await context
-            .Sales
-            .Include(x => x.Costumer)
-            .Include(x => x.Payment)
+            var petI = await context
+            .PetImages
             .AsNoTracking()
-            .Where(x => x.CostumerId == id)
+            .Where(x => x.PetId == id)
             .ToListAsync();
 
-            if (sales.Count == 0)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+            if (petI.Count == 0)
+                return NotFound(new { message = "Nenhuma imagem encontrada" });
 
 
-            return Ok(sales);
+            return Ok(petI);
 
         }
 
 
         //======Post============
+
         [HttpPost]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<Sale>> Post(
-           [FromBody] Sale model,
-           [FromServices] DataContext context
-       )
+        public async Task<ActionResult<PetImage>> Post(
+            [FromBody] PetImage model,
+            [FromServices] DataContext context
+        )
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+
+
                 //Add + Salvar DB
-                context.Sales.Add(model);
+                context.PetImages.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível realizar o lançamento." });
+                return BadRequest(new { message = "Não foi possível cadastrar a imagem do produto." });
             }
         }
+
 
         //======Put============
         [HttpPut]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Sale>> Put(
+        public async Task<ActionResult<PetImage>> Put(
             int id,
-            [FromBody] Sale model,
+            [FromBody] PetImage model,
             [FromServices] DataContext context)
         {
             try
             {
                 //validar id produto passado
                 if (id != model.Id)
-                    return NotFound(new { message = "Lançamento não encontrado." });
+                    return NotFound(new { message = "Nenhuma imagem encontrada" });
 
                 //Valida model
                 if (!ModelState.IsValid)
                     return BadRequest(model);
 
                 //Update DB
-                context.Entry<Sale>(model).State = EntityState.Modified;
+                context.Entry<PetImage>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
                 return Ok(model); //poderia retornar uma mensagem de sucesso.
@@ -142,31 +142,30 @@ namespace Lojax.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível atualizar o lançamento" });
+                return BadRequest(new { message = "Não foi possível atualizar a imagem do produto" });
             }
         }
 
-        //======DELETE============
         [HttpDelete]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Sale>> Delete(
+        public async Task<ActionResult<PetImage>> Delete(
             [FromServices] DataContext context,
             int id)
         {
-            var sale = await context.Sales.FirstOrDefaultAsync(x => x.Id == id);
-            if (sale == null)
-                return NotFound(new { message = "Lançamento não encontrada" });
+            var petI = await context.PetImages.FirstOrDefaultAsync(x => x.Id == id);
+            if (petI == null)
+                return NotFound(new { message = "Imagem não encontrada" });
 
             try
             {
-                context.Sales.Remove(sale);
+                context.PetImages.Remove(petI);
                 await context.SaveChangesAsync();
-                return sale;
+                return petI;
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível remover o lançamento" });
+                return BadRequest(new { message = "Não foi possível remover a imagem" });
 
             }
         }

@@ -4,53 +4,53 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lojax.Models
 {
-    [Table("SALES_PRODUCTS")] //renomear a tabela no banco
-    public class SaleProduct
+    [Table("sale_products")] //renomear a tabela no banco
+    public class OrderProduct
     {
         [Key]
-        [Column("ID")] //renomear a tabela no banco.
+        [Column("id")] //renomear a tabela no banco.
         public int Id { get; set; }
 
 
-        [Column("PROD_ID")]
+        [Column("prod_id")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int ProductId { get; set; }
 
 
-        [Column("SALE_ID")]
+        [Column("order_id")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
-        public int SaleId { get; set; }
+        public int OrderId { get; set; }
 
-        [Column("QUANTITY")]
+        [Column("quantity")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [Range(0.01, 999999, ErrorMessage = "A quanitade deve ser maior que zero")]
         [DataType("decimal")]
         public decimal Quantity { get; set; }
 
 
-        [Column("PRICE")]
+        [Column("price")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("decimal")]
         public decimal Price { get; set; }
 
-        [Column("TOTAL")]
+        [Column("total")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [Range(0.01, 999999, ErrorMessage = "O valor da venda deve ser maior que zero")]
         [DataType("decimal")]
         public decimal Total { get; set; }
 
-        [Column("DATE_CREATED")]
+        [Column("date_created")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateCreated { get; set; }
 
-        [Column("DATE_UPDATE")]
+        [Column("date_update")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
         //objetos completos
-        public Sale Sale { get; set; }
+        public Order Order { get; set; }
 
         public Product Product { get; set; }
     }

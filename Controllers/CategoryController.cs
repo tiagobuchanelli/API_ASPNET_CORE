@@ -6,6 +6,7 @@ using Lojax.Data;
 using Lojax.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace Lojax.Controllers
 {
@@ -16,10 +17,17 @@ namespace Lojax.Controllers
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<Category>>> Get(
+            [FromServices] DataContext context)
         {
 
-            var categories = await context.Categories.AsNoTracking().ToListAsync();
+            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
+            var categories = await context
+            .Categories
+            .AsNoTracking()
+            .Where(x => x.CpnyUid == user)
+            .ToListAsync();
 
             if (categories.Count == 0)
                 return NotFound(new { message = "Nenhuma categoria encontrada." });
@@ -30,13 +38,19 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        [Authorize]
+        // [Authorize]
         public async Task<ActionResult<Category>> GetByID(
             int id,
             [FromServices] DataContext context)
         {
+            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var category = await context
+            .Categories
+            .AsNoTracking()
+            .Where(x => x.CpnyUid == user)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
             if (category == null)
                 return NotFound(new { message = "Categoria não encontrada" });
 
@@ -54,6 +68,9 @@ namespace Lojax.Controllers
             [FromBody] Category model,
             [FromServices] DataContext context)
         {
+
+            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
             try
             {
                 //Valida o model
@@ -61,6 +78,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Add Categoria
+                model.CpnyUid = user;
                 context.Categories.Add(model);
 
                 //Salvar no banco e gerar ID
@@ -80,12 +98,14 @@ namespace Lojax.Controllers
         //=======PUT=======
         [HttpPut]
         [Route("{id:int}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<Category>> Put(
             int id,
             [FromBody] Category model,
             [FromServices] DataContext context)
         {
+            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
             try
             {
                 //valida ID da categoria
@@ -97,6 +117,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Atualizar Categoria
+                model.CpnyUid = user;
                 context.Entry<Category>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

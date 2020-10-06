@@ -10,50 +10,49 @@ using System;
 
 namespace Lojax.Controllers
 {
-    [Route("v1/sales-products")]
-    public class SaleProductController : ControllerBase
+
+    [Route("v1/products-image")]
+    public class ProductsImageController : ControllerBase
     {
+
         //======Get============
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<List<SaleProduct>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<ProductsImage>>> Get([FromServices] DataContext context)
         {
 
-            var salesP = await context
-            .SaleProducts
-            .Include(x => x.Product)
-            .Include(x => x.Sale)
+            var productsI = await context
+            .ProductsImage
             .AsNoTracking()
             .ToListAsync();
 
-            if (salesP.Count == 0)
-                return NotFound(new { message = "Nenhuma lançamento encontrado" });
+            if (productsI.Count == 0)
+                return NotFound(new { message = "Nenhuma imagem encontrada" });
 
 
-            return Ok(salesP);
+            return Ok(productsI);
 
         }
+
 
         [HttpGet]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<SaleProduct>> GetById(
+        public async Task<ActionResult<ProductsImage>> GetById(
             int id,
             [FromServices] DataContext context)
         {
 
-            var saleP = await context
-            .SaleProducts
-            .Include(x => x.Product)
-            .Include(x => x.Sale)
+            var productI = await context
+            .ProductsImage
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (saleP == null)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+            if (productI == null)
+                return NotFound(new { message = "Nenhuma imagem encontrada" });
 
-            return Ok(saleP);
+            return Ok(productI);
 
         }
 
@@ -61,74 +60,76 @@ namespace Lojax.Controllers
         [HttpGet]
         [Route("product/{id:int}")]
         [Authorize]
-        public async Task<ActionResult<List<SaleProduct>>> GetByProduct(
+        public async Task<ActionResult<List<ProductsImage>>> GetByCategory(
             int id,
             [FromServices] DataContext context)
         {
-            var salesP = await context
-            .SaleProducts
-            .Include(x => x.Product)
-            .Include(x => x.Sale)
+            var productsI = await context
+            .ProductsImage
             .AsNoTracking()
             .Where(x => x.ProductId == id)
             .ToListAsync();
 
-            if (salesP.Count == 0)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+            if (productsI.Count == 0)
+                return NotFound(new { message = "Nenhuma imagem encontrada" });
 
 
-            return Ok(salesP);
+            return Ok(productsI);
 
         }
 
 
         //======Post============
+
         [HttpPost]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<SaleProduct>> Post(
-           [FromBody] SaleProduct model,
-           [FromServices] DataContext context
-       )
+        public async Task<ActionResult<ProductsImage>> Post(
+            [FromBody] ProductsImage model,
+            [FromServices] DataContext context
+        )
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+
+
                 //Add + Salvar DB
-                context.SaleProducts.Add(model);
+                context.ProductsImage.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível realizar o lançamento." });
+                return BadRequest(new { message = "Não foi possível cadastrar a imagem do produto." });
             }
         }
+
 
         //======Put============
         [HttpPut]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<SaleProduct>> Put(
+        public async Task<ActionResult<ProductsImage>> Put(
             int id,
-            [FromBody] SaleProduct model,
+            [FromBody] ProductsImage model,
             [FromServices] DataContext context)
         {
             try
             {
                 //validar id produto passado
                 if (id != model.Id)
-                    return NotFound(new { message = "Lançamento não encontrado." });
+                    return NotFound(new { message = "Nenhuma imagem encontrada" });
 
                 //Valida model
                 if (!ModelState.IsValid)
                     return BadRequest(model);
 
                 //Update DB
-                context.Entry<SaleProduct>(model).State = EntityState.Modified;
+                context.Entry<ProductsImage>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
                 return Ok(model); //poderia retornar uma mensagem de sucesso.
@@ -141,33 +142,33 @@ namespace Lojax.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível atualizar o lançamento" });
+                return BadRequest(new { message = "Não foi possível atualizar a imagem do produto" });
             }
         }
 
-        //======DELETE============
         [HttpDelete]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<SaleProduct>> Delete(
+        public async Task<ActionResult<ProductsImage>> Delete(
             [FromServices] DataContext context,
             int id)
         {
-            var saleP = await context.SaleProducts.FirstOrDefaultAsync(x => x.Id == id);
-            if (saleP == null)
-                return NotFound(new { message = "Lançamento não encontrada" });
+            var productsI = await context.ProductsImage.FirstOrDefaultAsync(x => x.Id == id);
+            if (productsI == null)
+                return NotFound(new { message = "Imagem não encontrada" });
 
             try
             {
-                context.SaleProducts.Remove(saleP);
+                context.ProductsImage.Remove(productsI);
                 await context.SaveChangesAsync();
-                return saleP;
+                return productsI;
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível remover o lançamento" });
+                return BadRequest(new { message = "Não foi possível remover a categoria" });
 
             }
         }
+
     }
 }

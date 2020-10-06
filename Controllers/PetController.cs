@@ -11,28 +11,28 @@ using System;
 namespace Lojax.Controllers
 {
 
-    [Route("v1/products")]
-    public class Productcontroller : ControllerBase
+    [Route("v1/pets")]
+    public class PetController : ControllerBase
     {
 
         //======Get============
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<Pet>>> Get([FromServices] DataContext context)
         {
 
-            var products = await context
-            .Products
-            .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            var pets = await context
+            .Pets
+            .Include(x => x.User) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
             .AsNoTracking()
             .ToListAsync();
 
-            if (products.Count == 0)
-                return NotFound(new { message = "Nenhum produto encontrado" });
+            if (pets.Count == 0)
+                return NotFound(new { message = "Nenhum pet encontrado" });
 
 
-            return Ok(products);
+            return Ok(pets);
 
         }
 
@@ -40,50 +40,48 @@ namespace Lojax.Controllers
         [HttpGet]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Product>> GetById(
+        public async Task<ActionResult<Pet>> GetById(
             int id,
             [FromServices] DataContext context)
         {
 
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            var product = await context
-            .Products
-            .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            var pet = await context
+            .Pets
+            .Include(x => x.User) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
             .AsNoTracking()
-            .Where(x => x.CpnyUid == user)
+            .Where(x => x.UserId == user)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (product == null)
-                return NotFound(new { message = "Nenhum produto encontrado" });
+            if (pet == null)
+                return NotFound(new { message = "Nenhum pet encontrado" });
 
-            return Ok(product);
+            return Ok(pet);
 
         }
 
 
         [HttpGet]
-        [Route("categories/{id:int}")]
+        [Route("user")]
         [Authorize]
-        public async Task<ActionResult<List<Product>>> GetByCategory(
-            int id,
+        public async Task<ActionResult<List<Pet>>> GetByUser(
             [FromServices] DataContext context)
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            var products = await context
-            .Products
-            .Include(x => x.Category)
+            var pets = await context
+            .Pets
+            .Include(x => x.User)
             .AsNoTracking()
-            .Where(x => x.CategoryId == id)
-            .Where(x => x.CpnyUid == user)
+            .Where(x => x.UserId == user)
             .ToListAsync();
 
-            if (products.Count == 0)
-                return NotFound(new { message = "Nenhum produto encontrado" });
+            if (pets.Count == 0)
+                return NotFound(new { message = "Nenhum pet encontrado" });
 
 
-            return Ok(products);
+            return Ok(pets);
 
         }
 
@@ -93,8 +91,8 @@ namespace Lojax.Controllers
         [HttpPost]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<Product>> Post(
-            [FromBody] Product model,
+        public async Task<ActionResult<Pet>> Post(
+            [FromBody] Pet model,
             [FromServices] DataContext context
         )
         {
@@ -107,15 +105,15 @@ namespace Lojax.Controllers
 
 
                 //Add + Salvar DB
-                model.CpnyUid = user;
-                context.Products.Add(model);
+                model.UserId = user;
+                context.Pets.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível cadastrar o produto." });
+                return BadRequest(new { message = "Não foi possível cadastrar o pet." });
             }
         }
 
@@ -124,9 +122,9 @@ namespace Lojax.Controllers
         [HttpPut]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Product>> Put(
+        public async Task<ActionResult<Pet>> Put(
             int id,
-            [FromBody] Product model,
+            [FromBody] Pet model,
             [FromServices] DataContext context)
         {
 
@@ -136,15 +134,15 @@ namespace Lojax.Controllers
             {
                 //validar id produto passado
                 if (id != model.Id)
-                    return NotFound(new { message = "Produto não encontrado." });
+                    return NotFound(new { message = "Pet não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)
                     return BadRequest(model);
 
                 //Update DB
-                model.CpnyUid = user;
-                context.Entry<Product>(model).State = EntityState.Modified;
+                model.UserId = user;
+                context.Entry<Pet>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
                 return Ok(model); //poderia retornar uma mensagem de sucesso.
@@ -157,7 +155,7 @@ namespace Lojax.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível atualizar o produto" });
+                return BadRequest(new { message = "Não foi possível atualizar o pet" });
             }
         }
 

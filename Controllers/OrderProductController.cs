@@ -10,57 +10,85 @@ using System;
 
 namespace Lojax.Controllers
 {
-    [Route("v1/stock")]
-    public class StockController : ControllerBase
+    [Route("v1/order-products")]
+    public class OrderProductController : ControllerBase
     {
         //======Get============
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<List<Stock>>> Get([FromServices] DataContext context)
+        public async Task<ActionResult<List<OrderProduct>>> Get([FromServices] DataContext context)
         {
 
-            var stocks = await context
-            .Stocks
+            var salesP = await context
+            .OrderProducts
             .Include(x => x.Product)
+            .Include(x => x.Order)
             .AsNoTracking()
             .ToListAsync();
 
-            if (stocks.Count == 0)
-                return NotFound(new { message = "Nenhum estoque encontrado" });
+            if (salesP.Count == 0)
+                return NotFound(new { message = "Nenhuma lançamento encontrado" });
 
 
-            return Ok(stocks);
+            return Ok(salesP);
 
         }
 
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("order/{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Stock>> GetById(
+        public async Task<ActionResult<List<OrderProduct>>> GetById(
             int id,
             [FromServices] DataContext context)
         {
 
-            var stock = await context
-            .Stocks
-           .Include(x => x.Product)
+            var saleP = await context
+            .OrderProducts
+            .Include(x => x.Product)
+            .Include(x => x.Order)
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .Where(x => x.OrderId == id)
+            .ToListAsync();
 
-            if (stock == null)
-                return NotFound(new { message = "Nenhum estoque encontrado" });
+            if (saleP == null)
+                return NotFound(new { message = "Nenhum lançamento encontrado" });
 
-            return Ok(stock);
+            return Ok(saleP);
 
         }
+
+
+        [HttpGet]
+        [Route("product/{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<List<OrderProduct>>> GetByProduct(
+            int id,
+            [FromServices] DataContext context)
+        {
+            var salesP = await context
+            .OrderProducts
+            .Include(x => x.Product)
+            .Include(x => x.Order)
+            .AsNoTracking()
+            .Where(x => x.ProductId == id)
+            .ToListAsync();
+
+            if (salesP.Count == 0)
+                return NotFound(new { message = "Nenhum lançamento encontrado" });
+
+
+            return Ok(salesP);
+
+        }
+
 
         //======Post============
         [HttpPost]
         [Route("")]
         [Authorize]
-        public async Task<ActionResult<Stock>> Post(
-           [FromBody] Stock model,
+        public async Task<ActionResult<OrderProduct>> Post(
+           [FromBody] OrderProduct model,
            [FromServices] DataContext context
        )
         {
@@ -70,7 +98,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Add + Salvar DB
-                context.Stocks.Add(model);
+                context.OrderProducts.Add(model);
                 await context.SaveChangesAsync();
 
                 return Ok(model);
@@ -85,9 +113,9 @@ namespace Lojax.Controllers
         [HttpPut]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Stock>> Put(
+        public async Task<ActionResult<OrderProduct>> Put(
             int id,
-            [FromBody] Stock model,
+            [FromBody] OrderProduct model,
             [FromServices] DataContext context)
         {
             try
@@ -101,7 +129,7 @@ namespace Lojax.Controllers
                     return BadRequest(model);
 
                 //Update DB
-                context.Entry<Stock>(model).State = EntityState.Modified;
+                context.Entry<OrderProduct>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
                 return Ok(model); //poderia retornar uma mensagem de sucesso.
@@ -122,19 +150,19 @@ namespace Lojax.Controllers
         [HttpDelete]
         [Route("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<Stock>> Delete(
+        public async Task<ActionResult<OrderProduct>> Delete(
             [FromServices] DataContext context,
             int id)
         {
-            var stock = await context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-            if (stock == null)
+            var saleP = await context.OrderProducts.FirstOrDefaultAsync(x => x.Id == id);
+            if (saleP == null)
                 return NotFound(new { message = "Lançamento não encontrada" });
 
             try
             {
-                context.Stocks.Remove(stock);
+                context.OrderProducts.Remove(saleP);
                 await context.SaveChangesAsync();
-                return stock;
+                return saleP;
             }
             catch (Exception)
             {
@@ -143,5 +171,4 @@ namespace Lojax.Controllers
             }
         }
     }
-
 }

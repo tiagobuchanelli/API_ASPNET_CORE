@@ -15,7 +15,7 @@ namespace Lojax.Controllers
         //=======GET=======
         [HttpGet]
         [Route("")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<List<Setting>>> Get([FromServices] DataContext context)
         {
 
@@ -30,7 +30,7 @@ namespace Lojax.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<Setting>> GetByID(
             int id,
             [FromServices] DataContext context)
@@ -49,7 +49,7 @@ namespace Lojax.Controllers
         //=======POST=======
         [HttpPost]
         [Route("")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<Setting>> Post(
             [FromBody] Setting model,
             [FromServices] DataContext context)
@@ -80,7 +80,7 @@ namespace Lojax.Controllers
         //=======PUT=======
         [HttpPut]
         [Route("{id:int}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<Setting>> Put(
             int id,
             [FromBody] Setting model,

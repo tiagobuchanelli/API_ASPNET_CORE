@@ -13,16 +13,16 @@ namespace Lojax.Data
         //Representação das tabelas em memoria
         public DbSet<Category> Categories { get; set; }
         public DbSet<Setting> Settings { get; set; }
-        public DbSet<Entity> Entities { get; set; }
-        public DbSet<FinanceApAr> FinanceApArs { get; set; }
-        public DbSet<FinanceInstallment> FinanceInstallments { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Sale> Sales { get; set; }
-        public DbSet<SaleProduct> SaleProducts { get; set; }
-        public DbSet<Stock> Stocks { get; set; }
-        public DbSet<StockMov> StockMovs { get; set; }
+        public DbSet<ProductsImage> ProductsImage { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<Pet> Pets { get; set; }
+        public DbSet<PetImage> PetImages { get; set; }
 
     }
 }

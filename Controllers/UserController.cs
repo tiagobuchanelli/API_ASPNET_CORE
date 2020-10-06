@@ -22,6 +22,7 @@ namespace Lojax.Controllers
         public async Task<ActionResult<List<User>>> Get([FromServices] DataContext context)
         {
 
+            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;    
             var users = await context.Users.AsNoTracking().ToListAsync();
 
             if (users.Count == 0)
@@ -71,10 +72,28 @@ namespace Lojax.Controllers
 
                 return Ok(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new { message = "Não foi possível cadastrar um usuário" });
+                return BadRequest(new
+                {
+                    message =
+                "Não foi possível cadastrar um usuário "
+                + model.Uid
+                + " "
+                + model.Name
+                + " "
+                + model.Email
+                + " "
+                + model.Username
+                + " "
+                + model.Password
+                + " "
+                + model.Status
+                + " "
+                + ex.Message
+                });
+
             }
         }
 
