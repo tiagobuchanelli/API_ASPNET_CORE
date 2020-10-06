@@ -83,7 +83,7 @@ namespace Lojax.Controllers
         }
 
 
-        //======Post============
+        //======Post============ METODOS POST E PUT SERÃO ATUALIZADOS PELO CONTROLLER PRINCIPAL
         [HttpPost]
         [Route("")]
         [Authorize]

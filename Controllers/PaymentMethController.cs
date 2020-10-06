@@ -36,12 +36,11 @@ namespace Lojax.Controllers
             int id,
             [FromServices] DataContext context)
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var payment = await context
             .PaymentMethods
             .AsNoTracking()
-            .Where(x => x.CpnyUid == user)
             .FirstOrDefaultAsync(x => x.Id == id);
 
             if (payment == null)
@@ -52,6 +51,8 @@ namespace Lojax.Controllers
 
         }
 
+
+
         //=======POST=======
         [HttpPost]
         [Route("")]
@@ -60,7 +61,7 @@ namespace Lojax.Controllers
             [FromBody] PaymentMethod model,
             [FromServices] DataContext context)
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
 
             try
             {
@@ -69,7 +70,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Add Categoria
-                model.CpnyUid = user;
+
                 context.PaymentMethods.Add(model);
 
                 //Salvar no banco e gerar ID
@@ -94,7 +95,7 @@ namespace Lojax.Controllers
             [FromBody] PaymentMethod model,
             [FromServices] DataContext context)
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
 
             try
             {
@@ -107,7 +108,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Atualizar Categoria
-                model.CpnyUid = user;
+
                 context.Entry<PaymentMethod>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

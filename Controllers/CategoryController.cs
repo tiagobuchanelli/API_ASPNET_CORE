@@ -21,12 +21,11 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
 
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var categories = await context
             .Categories
             .AsNoTracking()
-            .Where(x => x.CpnyUid == user)
             .ToListAsync();
 
             if (categories.Count == 0)
@@ -43,12 +42,11 @@ namespace Lojax.Controllers
             int id,
             [FromServices] DataContext context)
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
 
             var category = await context
             .Categories
             .AsNoTracking()
-            .Where(x => x.CpnyUid == user)
             .FirstOrDefaultAsync(x => x.Id == id);
 
             if (category == null)
@@ -105,6 +103,16 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
+            //validar se a categoria informada pertence ao usuario
+            var categ = await context
+            .Categories
+            .AsNoTracking()
+            .Where(x => x.CpnyUid == user)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (categ == null)
+                return NotFound(new { message = "Categoria não encontrada" });
 
             try
             {

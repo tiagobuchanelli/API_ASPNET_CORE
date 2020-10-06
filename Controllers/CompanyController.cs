@@ -35,17 +35,18 @@ namespace Lojax.Controllers
 
 
         [HttpGet]
-        [Route("")]
+        [Route("{id:int}")]
         [Authorize]
         public async Task<ActionResult<Company>> GetByID(
+            int id,
             [FromServices] DataContext context)
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
 
             var entity = await context
             .Companies
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.CpnyUid == user);
+            .FirstOrDefaultAsync(x => x.Id == id);
 
             if (entity == null)
                 return NotFound(new { message = "Empresa não encontrada" });
@@ -90,36 +91,40 @@ namespace Lojax.Controllers
 
         //=======PUT=======
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("")]
         [Authorize]
         public async Task<ActionResult<Company>> Put(
-            int id,
+
             [FromBody] Company model,
             [FromServices] DataContext context)
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            //validar se a empresa que o usuário tem no token existe no banco de dados
-            var entity = await context
-            .Companies
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.CpnyUid == user);
+            var checkCompany = await context
+                .Companies
+                .AsNoTracking()
+                .Where(x => x.CpnyUid == user)
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
 
-            if (entity == null)
-                return NotFound(new { message = "Empresa não encontrada" });
+            if (checkCompany == null)
+                return NotFound(new { message = "Nenhuma empresa encontrada" });
+
 
             try
             {
-                //valida ID da empresa
-                if (entity.Id != model.Id)
-                    return NotFound(new { message = "Empresa não encontrado" });
+
+
+                //valida ID da categoria
+                // if (user != model.CpnyUid)
+                //     return NotFound(new { message = "Usuario que esta tentando alterar é diferente do token" });
+
 
                 //Valida o model
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
 
-                //Atualizar Categoria
+                //Atualizar empresa
                 model.CpnyUid = user;
                 context.Entry<Company>(model).State = EntityState.Modified;
 

@@ -45,13 +45,12 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
 
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var product = await context
             .Products
             .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
             .AsNoTracking()
-            .Where(x => x.CpnyUid == user)
             .FirstOrDefaultAsync(x => x.Id == id);
 
             if (product == null)
@@ -69,13 +68,35 @@ namespace Lojax.Controllers
             int id,
             [FromServices] DataContext context)
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var products = await context
             .Products
             .Include(x => x.Category)
             .AsNoTracking()
             .Where(x => x.CategoryId == id)
+            .ToListAsync();
+
+            if (products.Count == 0)
+                return NotFound(new { message = "Nenhum produto encontrado" });
+
+
+            return Ok(products);
+
+        }
+
+        [HttpGet]
+        [Route("company")]
+        [Authorize]
+        public async Task<ActionResult<List<Product>>> GetByCompany(
+            [FromServices] DataContext context)
+        {
+            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
+            var products = await context
+            .Products
+            .Include(x => x.Category)
+            .AsNoTracking()
             .Where(x => x.CpnyUid == user)
             .ToListAsync();
 
@@ -122,21 +143,29 @@ namespace Lojax.Controllers
 
         //======Put============
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("")]
         [Authorize]
         public async Task<ActionResult<Product>> Put(
-            int id,
             [FromBody] Product model,
             [FromServices] DataContext context)
         {
 
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
+            var checkProd = await context
+                .Products
+                .AsNoTracking()
+                .Where(x => x.CpnyUid == user)
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (checkProd == null)
+                return NotFound(new { message = "Nenhuma empresa encontrada" });
+
             try
             {
                 //validar id produto passado
-                if (id != model.Id)
-                    return NotFound(new { message = "Produto não encontrado." });
+                // if (id != model.Id)
+                //     return NotFound(new { message = "Produto não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)

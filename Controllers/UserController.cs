@@ -112,41 +112,54 @@ namespace Lojax.Controllers
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválido" });
 
-            var token = TokenService.GenerateToken(user);
+            //modelar para trabalhar com o firebase e não esse token aqui
+            //var token = TokenService.GenerateToken(user);
 
 
             //Depois que fizer o login e der certo, esta sendo retornado um novo objeto com os dados do usuario e o token gerado
             //Se retornar apenas o user, vem inclusive a senha, mas pode ser ocultado.
             model.Password = "";
-            return new
-            {
-                user = user,
-                token = token
-            };
+            return Ok(model);
         }
 
 
         //=======PUT=======
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("")]
         [Authorize]
         public async Task<ActionResult<User>> Put(
-            int id,
             [FromBody] User model,
             [FromServices] DataContext context)
         {
+            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
+
+            var checkUser = await context
+                .Users
+                .AsNoTracking()
+                .Where(x => x.Uid == user)
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (checkUser == null)
+                return NotFound(new { message = "Nenhuma usuario encontrado" });
+
+
+
             try
             {
-                //valida ID da categoria
-                if (id != model.Id)
-                    return NotFound(new { message = "Usuário não encontrado" });
+
+                // //valida ID da categoria
+                // if (user != model.Uid)
+                //     return NotFound(new { message = "Usuario que esta tentando alterar é diferente do token" });
+
 
                 //Valida o model
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
 
-                //Atualizar Categoria
+                //Atualizar usuario
+                model.Uid = user;
                 context.Entry<User>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

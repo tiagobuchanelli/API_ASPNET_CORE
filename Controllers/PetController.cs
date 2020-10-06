@@ -120,21 +120,29 @@ namespace Lojax.Controllers
 
         //======Put============
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("")]
         [Authorize]
         public async Task<ActionResult<Pet>> Put(
-            int id,
             [FromBody] Pet model,
             [FromServices] DataContext context)
         {
 
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
+            var checkPet = await context
+                .Pets
+                .AsNoTracking()
+                .Where(x => x.UserId == user)
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (checkPet == null)
+                return NotFound(new { message = "Nenhum pet encontrado" });
+
             try
             {
                 //validar id produto passado
-                if (id != model.Id)
-                    return NotFound(new { message = "Pet não encontrado." });
+                // if (id != model.Id)
+                //     return NotFound(new { message = "Pet não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)

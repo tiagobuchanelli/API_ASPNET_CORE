@@ -11,10 +11,7 @@ namespace Lojax.Models
         [Column("id")] //renomear a tabela no banco.
         public int Id { get; set; }
 
-        [Column("company_id")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        // [Required(ErrorMessage = "Este campo é obrigatorio")]
-        // [DataType("varchar")]
-        public string CpnyUid { get; set; }
+
 
         [Column("desc")]
         [Required(ErrorMessage = "Este campo é obrigatório")] //como tem MinLength não seria necessario
@@ -24,17 +21,20 @@ namespace Lojax.Models
         public string Desc { get; set; }
 
 
-        [Column("interval")]
+        [Column("type")] //cartao/dinheiro (0,1)
         [Required(ErrorMessage = "Este campo é obrigatório")] //como tem MinLength não seria necessario
         [Range(1, 999, ErrorMessage = "Intervalo deve ser maior que zero")]
         [DataType("int")]
-        public int Interval { get; set; }
+        public int Type { get; set; }
 
-        [Column("repeat_nr")]
+        [Column("type_desc")] //desc type: cartao/dinheiro
         [Required(ErrorMessage = "Este campo é obrigatório")] //como tem MinLength não seria necessario
-        [Range(1, 999, ErrorMessage = "Número de repetições deve ser maior que zero")]
-        [DataType("int")]
-        public int RepeatNr { get; set; }
+        [MaxLength(60, ErrorMessage = "Este campo deve conter entre 3 e 60 caracteres")]
+        [MinLength(3, ErrorMessage = "Este campo deve conter entre 3 e 60 caracteres")]
+        [DataType("varchar")]
+        public string TypeDesc { get; set; }
+
+
 
 
         [Column("date_created")]
@@ -45,7 +45,7 @@ namespace Lojax.Models
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
-        public Company Cpny { get; set; }
+
 
 
     }

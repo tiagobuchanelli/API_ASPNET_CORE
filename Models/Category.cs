@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,6 +27,12 @@ namespace Lojax.Models
         [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
         [DataType("int")]
         public int Status { get; set; }
+
+        [Column("date_created")]
+        public DateTime DateCreated { get; set; }
+
+        [Column("date_update")]
+        public DateTime DateUpdate { get; set; }
 
         public Company Cpny { get; set; }
 
