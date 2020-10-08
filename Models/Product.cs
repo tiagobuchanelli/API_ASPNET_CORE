@@ -12,6 +12,10 @@ namespace Lojax.Models
         public int Id { get; set; }
 
         [Column("company_id")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
+        // [DataType("varchar")]
+        public int CpnyId { get; set; }
+
+        [Column("company_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
         // [Required(ErrorMessage = "Este campo é obrigatorio")]
         // [DataType("varchar")]
         public string CpnyUid { get; set; }

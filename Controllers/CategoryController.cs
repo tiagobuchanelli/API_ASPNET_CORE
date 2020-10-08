@@ -25,6 +25,7 @@ namespace Lojax.Controllers
 
             var categories = await context
             .Categories
+            .Include(x => x.Cpny)
             .AsNoTracking()
             .ToListAsync();
 
@@ -68,6 +69,13 @@ namespace Lojax.Controllers
         {
 
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            var userCompany = await context
+            .Companies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Uid == user);
+
+            if (userCompany == null)
+                return NotFound(new { message = "empresa não encontrada, não será possível cadastrar a categoria" });
 
             try
             {
@@ -76,7 +84,11 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Add Categoria
-                model.CpnyUid = user;
+                model.CpnyId = userCompany.Id;
+                model.CpnyUid = userCompany.Uid;
+                model.Status = 1;
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Categories.Add(model);
 
                 //Salvar no banco e gerar ID
@@ -125,7 +137,9 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Atualizar Categoria
-                model.CpnyUid = user;
+                model.Status = 1;
+                model.DateCreated = categ.DateCreated;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Category>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

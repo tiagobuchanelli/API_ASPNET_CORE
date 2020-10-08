@@ -11,11 +11,13 @@ namespace Lojax.Models
         [Column("id")] //renomear a tabela no banco.
         public int Id { get; set; }
 
-        [Column("user_id")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
+        [Column("user_id")] //apenas para pode carregar o model do user
+        public int UserId { get; set; }
+
+        [Column("company_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
         //[Required(ErrorMessage = "Este campo é obrigatorio")]
         // [DataType("varchar")]
-        public string CpnyUid { get; set; }
-
+        public string Uid { get; set; }
 
         [Column("name")]
         [Required(ErrorMessage = "Este campo é obrigatório")]
@@ -71,8 +73,6 @@ namespace Lojax.Models
         public int Status { get; set; }
 
         [Column("type_entity")] //1 CLIENTE, 2 FORNECEDOR, 3 OUTRS
-        [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
-        [Range(1, 3, ErrorMessage = "Tipo inválido - Os valores devem ser 1,2 ou 3")]
         [DataType("int")]
         public int EntityType { get; set; }
 
@@ -84,7 +84,11 @@ namespace Lojax.Models
         [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
-        public User Cpny { get; set; }
+        public User User { get; set; }
+
+
+
+
 
 
     }

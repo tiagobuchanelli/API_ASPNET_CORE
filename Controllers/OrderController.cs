@@ -27,6 +27,7 @@ namespace Lojax.Controllers
             var sales = await context
             .Orders
             .Include(x => x.Costumer)
+            .Include(x => x.Cpny)
             .Include(x => x.Payment)
             .AsNoTracking()
             .ToListAsync();
@@ -52,6 +53,7 @@ namespace Lojax.Controllers
             var sale = await context
             .Orders
             .Include(x => x.Costumer)
+            .Include(x => x.Cpny)
             .Include(x => x.Payment)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -65,10 +67,9 @@ namespace Lojax.Controllers
 
 
         [HttpGet]
-        [Route("by-company")]
+        [Route("orders-by-company")]
         [Authorize]
         public async Task<ActionResult<List<Order>>> GetByCompany(
-
             [FromServices] DataContext context)
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
@@ -90,10 +91,10 @@ namespace Lojax.Controllers
         }
 
         [HttpGet]
-        [Route("by-costumer")]
+        [Route("orders-by-costumer")]
         [Authorize]
         public async Task<ActionResult<List<Order>>> GetByCostumer(
-
+            int id,
             [FromServices] DataContext context)
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
@@ -115,7 +116,7 @@ namespace Lojax.Controllers
         }
 
 
-        //======Post============
+        //======Post============ POST PARTE APENAS DO CLIENTE
         [HttpPost]
         [Route("")]
         [Authorize]
@@ -124,15 +125,30 @@ namespace Lojax.Controllers
            [FromServices] DataContext context
        )
         {
+
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            var checkUser = await context
+                .Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Uid == user);
+
+            if (checkUser == null)
+                return NotFound(new { message = "Nenhum usuario encontrado" });
 
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                if (String.IsNullOrEmpty(model.CpnyUid))
+                    return NotFound(new { message = "Por favor obrigatório informar a empresa" });
+
                 //Add + Salvar DB
-                model.CpnyUid = user; //sempre parte do usuario a criação da Venda
+                model.CostumerId = checkUser.Id;
+                model.CostumerUid = checkUser.Uid;
+                model.Status = 1;
+                model.DateOrder = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Orders.Add(model);
                 await context.SaveChangesAsync();
 
@@ -175,7 +191,12 @@ namespace Lojax.Controllers
                     return BadRequest(model);
 
                 //Update DB
-                model.CpnyUid = user;
+                model.CostumerId = checkCompany.CostumerId;
+                model.CostumerUid = checkCompany.CostumerUid;
+                model.CpnyId = checkCompany.CpnyId;
+                model.CpnyUid = checkCompany.CpnyUid;
+
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Order>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
@@ -203,13 +224,13 @@ namespace Lojax.Controllers
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            var checkCompany = await context
+            var checkCostumer = await context
                 .Orders
                 .AsNoTracking()
                 .Where(x => x.CostumerUid == user)
                 .FirstOrDefaultAsync(x => x.Id == model.Id);
 
-            if (checkCompany == null)
+            if (checkCostumer == null)
                 return NotFound(new { message = "Nenhuma venda encontrada" });
 
 
@@ -224,7 +245,12 @@ namespace Lojax.Controllers
                     return BadRequest(model);
 
                 //Update DB
-                model.CpnyUid = user;
+                model.CostumerId = checkCostumer.CostumerId;
+                model.CostumerUid = checkCostumer.CostumerUid;
+                model.CpnyId = checkCostumer.CpnyId;
+                model.CpnyUid = checkCostumer.CpnyUid;
+
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Order>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
@@ -242,66 +268,66 @@ namespace Lojax.Controllers
             }
         }
 
-        //======DELETE============
-        [HttpDelete]
-        [Route("company-del-order/{id:int}")]
-        [Authorize]
-        public async Task<ActionResult<Order>> DeleteCompanyOrder(
-            [FromServices] DataContext context,
-            int id)
-        {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+        //======DELETE============ IMPLEMENTAR NO PUT ATRAVES DO STATUS
+        // [HttpDelete]
+        // [Route("company-del-order/{id:int}")]
+        // [Authorize]
+        // public async Task<ActionResult<Order>> DeleteCompanyOrder(
+        //     [FromServices] DataContext context,
+        //     int id)
+        // {
+        //     var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            var sale = await context
-            .Orders
-            .Where(x => x.CpnyUid == user)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        //     var sale = await context
+        //     .Orders
+        //     .Where(x => x.CpnyId == user)
+        //     .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (sale == null)
-                return NotFound(new { message = "Lançamento não encontrado" });
+        //     if (sale == null)
+        //         return NotFound(new { message = "Lançamento não encontrado" });
 
-            try
-            {
-                context.Orders.Remove(sale);
-                await context.SaveChangesAsync();
-                return sale;
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { message = "Não foi possível remover o lançamento" });
+        //     try
+        //     {
+        //         context.Orders.Remove(sale);
+        //         await context.SaveChangesAsync();
+        //         return sale;
+        //     }
+        //     catch (Exception)
+        //     {
+        //         return BadRequest(new { message = "Não foi possível remover o lançamento" });
 
-            }
-        }
+        //     }
+        // }
 
-        [HttpDelete]
-        [Route("costumer-del-order/{id:int}")]
-        [Authorize]
-        public async Task<ActionResult<Order>> DeleteCostumerOrder(
-            [FromServices] DataContext context,
-            int id)
-        {
-            var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+        // [HttpDelete]
+        // [Route("costumer-del-order/{id:int}")]
+        // [Authorize]
+        // public async Task<ActionResult<Order>> DeleteCostumerOrder(
+        //     [FromServices] DataContext context,
+        //     int id)
+        // {
+        //     var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
-            var sale = await context
-            .Orders
-            .Where(x => x.CostumerUid == user)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        //     var sale = await context
+        //     .Orders
+        //     .Where(x => x.CostumerUid == user)
+        //     .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (sale == null)
-                return NotFound(new { message = "Lançamento não encontrado" });
+        //     if (sale == null)
+        //         return NotFound(new { message = "Lançamento não encontrado" });
 
-            try
-            {
-                context.Orders.Remove(sale);
-                await context.SaveChangesAsync();
-                return sale;
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { message = "Não foi possível remover o lançamento" });
+        //     try
+        //     {
+        //         context.Orders.Remove(sale);
+        //         await context.SaveChangesAsync();
+        //         return sale;
+        //     }
+        //     catch (Exception)
+        //     {
+        //         return BadRequest(new { message = "Não foi possível remover o lançamento" });
 
-            }
-        }
+        //     }
+        // }
 
     }
 }

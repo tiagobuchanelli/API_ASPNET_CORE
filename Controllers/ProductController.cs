@@ -25,6 +25,7 @@ namespace Lojax.Controllers
             var products = await context
             .Products
             .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            .Include(x => x.Cpny)
             .AsNoTracking()
             .ToListAsync();
 
@@ -50,6 +51,7 @@ namespace Lojax.Controllers
             var product = await context
             .Products
             .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            .Include(x => x.Cpny)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -73,6 +75,7 @@ namespace Lojax.Controllers
             var products = await context
             .Products
             .Include(x => x.Category)
+            .Include(x => x.Cpny)
             .AsNoTracking()
             .Where(x => x.CategoryId == id)
             .ToListAsync();
@@ -86,7 +89,7 @@ namespace Lojax.Controllers
         }
 
         [HttpGet]
-        [Route("company")]
+        [Route("my-company")]
         [Authorize]
         public async Task<ActionResult<List<Product>>> GetByCompany(
             [FromServices] DataContext context)
@@ -96,6 +99,7 @@ namespace Lojax.Controllers
             var products = await context
             .Products
             .Include(x => x.Category)
+            .Include(x => x.Cpny)
             .AsNoTracking()
             .Where(x => x.CpnyUid == user)
             .ToListAsync();
@@ -120,6 +124,15 @@ namespace Lojax.Controllers
         )
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+            var checkCompany = await context
+                .Companies
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Uid == user);
+
+            if (checkCompany == null)
+                return NotFound(new { message = "Nenhuma empresa encontrada" });
+
+
             try
             {
                 if (!ModelState.IsValid)
@@ -128,7 +141,10 @@ namespace Lojax.Controllers
 
 
                 //Add + Salvar DB
-                model.CpnyUid = user;
+                model.CpnyId = checkCompany.Id;
+                model.CpnyUid = checkCompany.Uid;
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Products.Add(model);
                 await context.SaveChangesAsync();
 
@@ -141,7 +157,7 @@ namespace Lojax.Controllers
         }
 
 
-        //======Put============
+        //======Put============ 
         [HttpPut]
         [Route("")]
         [Authorize]
@@ -172,7 +188,10 @@ namespace Lojax.Controllers
                     return BadRequest(model);
 
                 //Update DB
-                model.CpnyUid = user;
+                model.CpnyId = checkProd.CpnyId;
+                model.CpnyUid = checkProd.CpnyUid;
+                model.DateCreated = checkProd.DateCreated;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Product>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 

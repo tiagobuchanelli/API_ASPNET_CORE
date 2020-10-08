@@ -70,7 +70,8 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Add Categoria
-
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.PaymentMethods.Add(model);
 
                 //Salvar no banco e gerar ID
@@ -108,7 +109,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
                 //Atualizar Categoria
-
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<PaymentMethod>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

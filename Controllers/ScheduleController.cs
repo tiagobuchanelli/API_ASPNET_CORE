@@ -153,6 +153,8 @@ namespace Lojax.Controllers
 
                 //Add + Salvar DB
                 model.CostumerId = user;
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Schedules.Add(model);
                 await context.SaveChangesAsync();
 
@@ -180,6 +182,8 @@ namespace Lojax.Controllers
 
                 //Add + Salvar DB
                 model.CompanyId = user;
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Schedules.Add(model);
                 await context.SaveChangesAsync();
 
@@ -223,6 +227,7 @@ namespace Lojax.Controllers
 
                 //Update DB
                 model.CostumerId = user;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Schedule>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
@@ -271,6 +276,7 @@ namespace Lojax.Controllers
 
                 //Update DB
                 model.CompanyId = user;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Schedule>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 

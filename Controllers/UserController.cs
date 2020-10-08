@@ -65,6 +65,10 @@ namespace Lojax.Controllers
 
 
                 //Add Categoria
+                model.Status = 1;
+                model.Role = "Default";
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Users.Add(model);
 
                 //Salvar no banco e gerar ID
@@ -72,26 +76,14 @@ namespace Lojax.Controllers
 
                 return Ok(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return BadRequest(new
                 {
                     message =
                 "Não foi possível cadastrar um usuário "
-                + model.Uid
-                + " "
-                + model.Name
-                + " "
-                + model.Email
-                + " "
-                + model.Username
-                + " "
-                + model.Password
-                + " "
-                + model.Status
-                + " "
-                + ex.Message
+
                 });
 
             }
@@ -106,7 +98,7 @@ namespace Lojax.Controllers
         {
             var user = await context.Users
                 .AsNoTracking()
-                .Where(x => x.Username == model.Username && x.Password == model.Password)
+                //.Where(x => x.Username == model.Username && x.Password == model.Password)
                 .FirstOrDefaultAsync();
 
             if (user == null)
@@ -118,7 +110,7 @@ namespace Lojax.Controllers
 
             //Depois que fizer o login e der certo, esta sendo retornado um novo objeto com os dados do usuario e o token gerado
             //Se retornar apenas o user, vem inclusive a senha, mas pode ser ocultado.
-            model.Password = "";
+            //model.Password = "";
             return Ok(model);
         }
 
@@ -160,6 +152,10 @@ namespace Lojax.Controllers
 
                 //Atualizar usuario
                 model.Uid = user;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
+                model.DateCreated = checkUser.DateCreated;
+                model.Status = checkUser.Status;
+                model.Role = checkUser.Role;
                 context.Entry<User>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

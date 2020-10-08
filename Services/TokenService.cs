@@ -18,7 +18,7 @@ namespace Lojax.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                    //O Claim tem tipos como Nome e Role, e podemos associar ao modelo de usuario caso tenha esses campos ou algum parecido.
-                   new Claim(ClaimTypes.Name, user.Username.ToString()),
+                   //new Claim(ClaimTypes.Name, user.Username.ToString()),
                    new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),

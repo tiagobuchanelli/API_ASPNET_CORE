@@ -30,21 +30,6 @@ namespace Lojax.Models
         public string Email { get; set; }
 
 
-        [Column("username")]
-        [Required(ErrorMessage = "Este campo é obrigatório")]
-        [MaxLength(20, ErrorMessage = "Este campo deve conter entre 8 e 20 caracteres")]
-        [MinLength(6, ErrorMessage = "Este campo deve conter entre 8 e 20 caracteres")]
-        [DataType("varchar")]
-        public string Username { get; set; }
-
-        [Column("password")]
-        [Required(ErrorMessage = "Este campo é obrigatório")]
-        [MaxLength(20, ErrorMessage = "Este campo deve conter entre 6 e 20 caracteres")]
-        [MinLength(6, ErrorMessage = "Este campo deve conter entre 6 e 20 caracteres")]
-        [DataType("varchar")]
-        public string Password { get; set; }
-
-
         [Column("status")] //0 Cancelado - 1 Ativo
         [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
         [DataType("int")]

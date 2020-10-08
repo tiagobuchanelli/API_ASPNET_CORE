@@ -12,10 +12,15 @@ namespace Lojax.Models
         public int Id { get; set; }
 
 
-        [Column("user_id")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        // [Required(ErrorMessage = "Este campo é obrigatorio")]
+        [Column("user_id")]
+        [Required(ErrorMessage = "Este campo é obrigatorio")]
+        [Range(1, 999999, ErrorMessage = "O valor da venda deve ser maior que zero")]
+        public int UserId { get; set; }
+
+        [Column("user_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
+        //[Required(ErrorMessage = "Este campo é obrigatorio")]
         // [DataType("varchar")]
-        public string UserId { get; set; }
+        public string UserUid { get; set; }
 
 
 

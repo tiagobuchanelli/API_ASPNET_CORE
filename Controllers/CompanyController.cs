@@ -24,6 +24,7 @@ namespace Lojax.Controllers
 
             var entities = await context
             .Companies
+            .Include(x => x.User)
             .AsNoTracking()
             .ToListAsync();
 
@@ -45,6 +46,7 @@ namespace Lojax.Controllers
 
             var entity = await context
             .Companies
+            .Include(x => x.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -65,6 +67,15 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
+            var userCheck = await context
+            .Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Uid == user);
+
+            if (userCheck == null)
+                return NotFound(new { message = "usuário não encontrado, não será possível cadastrar da empresa" });
+
             try
             {
                 //Valida o model
@@ -72,8 +83,13 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
 
-                //Add Categoria
-                model.CpnyUid = user;
+                //Add Empresa
+                model.UserId = userCheck.Id;
+                model.Uid = user;
+                model.Status = 1;
+                model.EntityType = 1;
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Companies.Add(model);
 
                 //Salvar no banco e gerar ID
@@ -103,7 +119,7 @@ namespace Lojax.Controllers
             var checkCompany = await context
                 .Companies
                 .AsNoTracking()
-                .Where(x => x.CpnyUid == user)
+                .Where(x => x.Uid == user)
                 .FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (checkCompany == null)
@@ -125,7 +141,11 @@ namespace Lojax.Controllers
 
 
                 //Atualizar empresa
-                model.CpnyUid = user;
+                model.Uid = user;
+                model.Status = checkCompany.Status;
+                model.EntityType = checkCompany.EntityType;
+                model.DateCreated = checkCompany.DateCreated;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Company>(model).State = EntityState.Modified;
 
                 //Salvar no banco 

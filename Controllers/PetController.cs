@@ -51,7 +51,7 @@ namespace Lojax.Controllers
             .Pets
             .Include(x => x.User) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
             .AsNoTracking()
-            .Where(x => x.UserId == user)
+            .Where(x => x.UserUid == user)
             .FirstOrDefaultAsync(x => x.Id == id);
 
             if (pet == null)
@@ -74,7 +74,7 @@ namespace Lojax.Controllers
             .Pets
             .Include(x => x.User)
             .AsNoTracking()
-            .Where(x => x.UserId == user)
+            .Where(x => x.UserUid == user)
             .ToListAsync();
 
             if (pets.Count == 0)
@@ -105,7 +105,9 @@ namespace Lojax.Controllers
 
 
                 //Add + Salvar DB
-                model.UserId = user;
+                model.UserUid = user;
+                model.DateCreated = DateTime.Now.ToLocalTime();
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Pets.Add(model);
                 await context.SaveChangesAsync();
 
@@ -132,7 +134,7 @@ namespace Lojax.Controllers
             var checkPet = await context
                 .Pets
                 .AsNoTracking()
-                .Where(x => x.UserId == user)
+                .Where(x => x.UserUid == user)
                 .FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (checkPet == null)
@@ -149,7 +151,8 @@ namespace Lojax.Controllers
                     return BadRequest(model);
 
                 //Update DB
-                model.UserId = user;
+                model.UserUid = user;
+                model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Pet>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
