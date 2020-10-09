@@ -132,7 +132,7 @@ namespace Lojax.Controllers
                 context.Entry<ProductsImage>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
-                return Ok(model); //poderia retornar uma mensagem de sucesso.
+                return Ok(model);
 
             }
             catch (DbUpdateConcurrencyException)

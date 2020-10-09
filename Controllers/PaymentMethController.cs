@@ -36,7 +36,7 @@ namespace Lojax.Controllers
             int id,
             [FromServices] DataContext context)
         {
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+
 
             var payment = await context
             .PaymentMethods

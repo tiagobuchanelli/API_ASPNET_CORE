@@ -22,7 +22,7 @@ namespace Lojax.Controllers
         public async Task<ActionResult<List<User>>> Get([FromServices] DataContext context)
         {
 
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;    
+
             var users = await context.Users.AsNoTracking().ToListAsync();
 
             if (users.Count == 0)
@@ -64,7 +64,7 @@ namespace Lojax.Controllers
                     return BadRequest(ModelState);
 
 
-                //Add Categoria
+                //Add user
                 model.Status = 1;
                 model.Role = "Default";
                 model.DateCreated = DateTime.Now.ToLocalTime();
@@ -139,11 +139,6 @@ namespace Lojax.Controllers
 
             try
             {
-
-                // //valida ID da categoria
-                // if (user != model.Uid)
-                //     return NotFound(new { message = "Usuario que esta tentando alterar é diferente do token" });
-
 
                 //Valida o model
                 if (!ModelState.IsValid)

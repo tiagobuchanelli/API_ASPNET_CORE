@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lojax.Models
 {
-    [Table("sale_products")] //renomear a tabela no banco
+    [Table("sale_products")]
     public class OrderProduct
     {
         [Key]
-        [Column("id")] //renomear a tabela no banco.
+        [Column("id")]
         public int Id { get; set; }
 
 

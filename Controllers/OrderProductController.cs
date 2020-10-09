@@ -28,7 +28,7 @@ namespace Lojax.Controllers
             .ToListAsync();
 
             if (salesP.Count == 0)
-                return NotFound(new { message = "Nenhuma lançamento encontrado" });
+                return NotFound(new { message = "Nenhuma produto encontrado" });
 
 
             return Ok(salesP);
@@ -52,7 +52,7 @@ namespace Lojax.Controllers
             .ToListAsync();
 
             if (saleP == null)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+                return NotFound(new { message = "Nenhum produto encontrado" });
 
             return Ok(saleP);
 
@@ -75,7 +75,7 @@ namespace Lojax.Controllers
             .ToListAsync();
 
             if (salesP.Count == 0)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+                return NotFound(new { message = "Nenhum produto encontrado" });
 
 
             return Ok(salesP);
@@ -122,7 +122,7 @@ namespace Lojax.Controllers
             {
                 //validar id produto passado
                 if (id != model.Id)
-                    return NotFound(new { message = "Lançamento não encontrado." });
+                    return NotFound(new { message = "Produto não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)

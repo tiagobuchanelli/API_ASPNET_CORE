@@ -22,8 +22,6 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
 
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
-
             var sales = await context
             .Orders
             .Include(x => x.Costumer)
@@ -48,7 +46,6 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
 
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var sale = await context
             .Orders
@@ -59,7 +56,7 @@ namespace Lojax.Controllers
             .FirstOrDefaultAsync(x => x.Id == id);
 
             if (sale == null)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+                return NotFound(new { message = "Nenhuma venda encontrada" });
 
             return Ok(sale);
 
@@ -83,7 +80,7 @@ namespace Lojax.Controllers
             .ToListAsync();
 
             if (sales.Count == 0)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+                return NotFound(new { message = "Nenhuma venda encontrada" });
 
 
             return Ok(sales);
@@ -108,7 +105,7 @@ namespace Lojax.Controllers
             .ToListAsync();
 
             if (sales.Count == 0)
-                return NotFound(new { message = "Nenhum lançamento encontrado" });
+                return NotFound(new { message = "Nenhuma venda encontrada" });
 
 
             return Ok(sales);
@@ -156,7 +153,7 @@ namespace Lojax.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível realizar o lançamento." });
+                return BadRequest(new { message = "Não foi possível realizar o lançamento da venda." });
             }
         }
 
@@ -182,9 +179,6 @@ namespace Lojax.Controllers
 
             try
             {
-                // //validar id produto passado
-                // if (id != model.Id)
-                //     return NotFound(new { message = "Lançamento não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)
@@ -195,7 +189,7 @@ namespace Lojax.Controllers
                 model.CostumerUid = checkCompany.CostumerUid;
                 model.CpnyId = checkCompany.CpnyId;
                 model.CpnyUid = checkCompany.CpnyUid;
-
+                model.DateOrder = checkCompany.DateOrder;
                 model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Order>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
@@ -236,9 +230,7 @@ namespace Lojax.Controllers
 
             try
             {
-                // //validar id produto passado
-                // if (id != model.Id)
-                //     return NotFound(new { message = "Lançamento não encontrado." });
+
 
                 //Valida model
                 if (!ModelState.IsValid)
@@ -249,7 +241,7 @@ namespace Lojax.Controllers
                 model.CostumerUid = checkCostumer.CostumerUid;
                 model.CpnyId = checkCostumer.CpnyId;
                 model.CpnyUid = checkCostumer.CpnyUid;
-
+                model.DateOrder = checkCostumer.DateOrder;
                 model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Order>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();

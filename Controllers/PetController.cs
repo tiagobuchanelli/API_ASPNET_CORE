@@ -24,7 +24,7 @@ namespace Lojax.Controllers
 
             var pets = await context
             .Pets
-            .Include(x => x.User) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            .Include(x => x.User)
             .AsNoTracking()
             .ToListAsync();
 
@@ -49,7 +49,7 @@ namespace Lojax.Controllers
 
             var pet = await context
             .Pets
-            .Include(x => x.User) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            .Include(x => x.User)
             .AsNoTracking()
             .Where(x => x.UserUid == user)
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -142,9 +142,7 @@ namespace Lojax.Controllers
 
             try
             {
-                //validar id produto passado
-                // if (id != model.Id)
-                //     return NotFound(new { message = "Pet não encontrado." });
+
 
                 //Valida model
                 if (!ModelState.IsValid)

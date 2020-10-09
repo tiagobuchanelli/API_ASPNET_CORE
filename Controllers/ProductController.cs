@@ -24,7 +24,7 @@ namespace Lojax.Controllers
 
             var products = await context
             .Products
-            .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            .Include(x => x.Category)
             .Include(x => x.Cpny)
             .AsNoTracking()
             .ToListAsync();
@@ -46,11 +46,10 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
 
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var product = await context
             .Products
-            .Include(x => x.Category) //Como foi inserido o objeto completo da categoria no model do produto, agora é possivel recuperá-lo com include.
+            .Include(x => x.Category)
             .Include(x => x.Cpny)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -70,7 +69,6 @@ namespace Lojax.Controllers
             int id,
             [FromServices] DataContext context)
         {
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var products = await context
             .Products
@@ -179,9 +177,6 @@ namespace Lojax.Controllers
 
             try
             {
-                //validar id produto passado
-                // if (id != model.Id)
-                //     return NotFound(new { message = "Produto não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)
@@ -195,7 +190,7 @@ namespace Lojax.Controllers
                 context.Entry<Product>(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
 
-                return Ok(model); //poderia retornar uma mensagem de sucesso.
+                return Ok(model);
 
             }
             catch (DbUpdateConcurrencyException)

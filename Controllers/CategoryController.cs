@@ -21,7 +21,6 @@ namespace Lojax.Controllers
             [FromServices] DataContext context)
         {
 
-            //var user = User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
 
             var categories = await context
             .Categories
@@ -75,7 +74,7 @@ namespace Lojax.Controllers
             .FirstOrDefaultAsync(x => x.Uid == user);
 
             if (userCompany == null)
-                return NotFound(new { message = "empresa não encontrada, não será possível cadastrar a categoria" });
+                return NotFound(new { message = "Empresa não encontrada. Não será possível cadastrar a categoria" });
 
             try
             {
@@ -86,7 +85,6 @@ namespace Lojax.Controllers
                 //Add Categoria
                 model.CpnyId = userCompany.Id;
                 model.CpnyUid = userCompany.Uid;
-                model.Status = 1;
                 model.DateCreated = DateTime.Now.ToLocalTime();
                 model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Categories.Add(model);
@@ -107,10 +105,9 @@ namespace Lojax.Controllers
 
         //=======PUT=======
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("")]
         [Authorize]
         public async Task<ActionResult<Category>> Put(
-            int id,
             [FromBody] Category model,
             [FromServices] DataContext context)
         {
@@ -121,23 +118,20 @@ namespace Lojax.Controllers
             .Categories
             .AsNoTracking()
             .Where(x => x.CpnyUid == user)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (categ == null)
                 return NotFound(new { message = "Categoria não encontrada" });
 
             try
             {
-                //valida ID da categoria
-                if (id != model.Id)
-                    return NotFound(new { message = "Categoria não encontrada" });
+
 
                 //Valida o model
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
                 //Atualizar Categoria
-                model.Status = 1;
                 model.DateCreated = categ.DateCreated;
                 model.DateUpdate = DateTime.Now.ToLocalTime();
                 context.Entry<Category>(model).State = EntityState.Modified;
@@ -147,7 +141,7 @@ namespace Lojax.Controllers
 
                 return Ok(model);
             }
-            catch (DbUpdateConcurrencyException) //Verifica se existe um dado sendo atualizado ao mesmo tempo.
+            catch (DbUpdateConcurrencyException)
             {
 
                 return BadRequest(new { message = "Esse registro já foi atualizado" });

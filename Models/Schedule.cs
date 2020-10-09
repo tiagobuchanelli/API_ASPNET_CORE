@@ -26,17 +26,16 @@ namespace Lojax.Models
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         public string CompanyId { get; set; }
 
-        [Column("status")] //0 CANCELADO, 1 ATIVO
+        //0 CANCELADO, 1 ATIVO
+        [Column("status")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Status { get; set; }
 
         [Column("date_created")]
-        [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateCreated { get; set; }
 
         [Column("date_update")]
-        [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
         [Column("date_start")]

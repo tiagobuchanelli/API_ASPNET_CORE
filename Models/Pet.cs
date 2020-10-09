@@ -11,20 +11,19 @@ namespace Lojax.Models
         [Column("id")] //renomear a tabela no banco.
         public int Id { get; set; }
 
-
         [Column("user_id")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [Range(1, 999999, ErrorMessage = "O valor da venda deve ser maior que zero")]
         public int UserId { get; set; }
 
-        [Column("user_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        //[Required(ErrorMessage = "Este campo é obrigatorio")]
+        //UID do Usuário. Utilizado para identificar por meio do uid_user que está presente no token. 
+        [Column("user_uid")]
         // [DataType("varchar")]
         public string UserUid { get; set; }
 
 
-
-        [Column("status")] //0 CANCELADO, 1 ATIVO
+        //0 CANCELADO, 1 ATIVO
+        [Column("status")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Status { get; set; }
@@ -40,27 +39,28 @@ namespace Lojax.Models
         [DataType("varchar")]
         public string ColorPet { get; set; }
 
-        [Column("age")] //0 CANCELADO, 1 ATIVO
+        [Column("age")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Age { get; set; }
 
-        [Column("species")] //0 CANCELADO, 1 ATIVO
+        [Column("species")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Species { get; set; }
 
-        [Column("race")] //0 CANCELADO, 1 ATIVO
+        [Column("race")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Race { get; set; }
 
-        [Column("pelage")] //0 CANCELADO, 1 ATIVO
+        [Column("pelage")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Pelage { get; set; }
 
-        [Column("gender")] //1 MACHO, 2 FEMEA, 3 INDEFINIDO
+        //1 MACHO, 2 FEMEA, 3 INDEFINIDO
+        [Column("gender")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Gender { get; set; }
@@ -80,12 +80,10 @@ namespace Lojax.Models
         public DateTime BirthDate { get; set; }
 
         [Column("date_created")]
-        [Required(ErrorMessage = "Obrigatório informar uma data.")]
         public DateTime DateCreated { get; set; }
 
 
         [Column("date_update")]
-        [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
 

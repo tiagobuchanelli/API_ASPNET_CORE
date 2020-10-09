@@ -21,7 +21,6 @@ namespace Lojax.Controllers
         public async Task<ActionResult<List<Company>>> Get([FromServices] DataContext context)
         {
 
-
             var entities = await context
             .Companies
             .Include(x => x.User)
@@ -42,7 +41,6 @@ namespace Lojax.Controllers
             int id,
             [FromServices] DataContext context)
         {
-
 
             var entity = await context
             .Companies
@@ -74,7 +72,7 @@ namespace Lojax.Controllers
             .FirstOrDefaultAsync(x => x.Uid == user);
 
             if (userCheck == null)
-                return NotFound(new { message = "usuário não encontrado, não será possível cadastrar da empresa" });
+                return NotFound(new { message = "Usuário não encontrado. Não será possível cadastrar da empresa" });
 
             try
             {
@@ -85,7 +83,7 @@ namespace Lojax.Controllers
 
                 //Add Empresa
                 model.UserId = userCheck.Id;
-                model.Uid = user;
+                model.Uid = userCheck.Uid;
                 model.Status = 1;
                 model.EntityType = 1;
                 model.DateCreated = DateTime.Now.ToLocalTime();
@@ -130,18 +128,13 @@ namespace Lojax.Controllers
             {
 
 
-                //valida ID da categoria
-                // if (user != model.CpnyUid)
-                //     return NotFound(new { message = "Usuario que esta tentando alterar é diferente do token" });
-
-
                 //Valida o model
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
 
                 //Atualizar empresa
-                model.Uid = user;
+                model.Uid = checkCompany.Uid;
                 model.Status = checkCompany.Status;
                 model.EntityType = checkCompany.EntityType;
                 model.DateCreated = checkCompany.DateCreated;

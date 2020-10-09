@@ -12,7 +12,8 @@ namespace Lojax.Models
         [Required(ErrorMessage = "Este campo é obrigatório")]
         public int Id { get; set; }
 
-        [Column("uid")] //id do firebase
+        //UID gerado pelo Firebase
+        [Column("uid")]
         [Required(ErrorMessage = "Este campo é obrigatório")]
         public string Uid { get; set; }
 
@@ -29,15 +30,14 @@ namespace Lojax.Models
         [DataType("varchar")]
         public string Email { get; set; }
 
-
-        [Column("status")] //0 Cancelado - 1 Ativo
-        [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
+        //0 Cancelado - 1 Ativo
+        [Column("status")]
         [DataType("int")]
         public int Status { get; set; }
 
-        [Column("role")] //Default, Company
+        //Default, Company
+        [Column("role")]
         public string Role { get; set; }
-
 
         [Column("date_created")]
         public DateTime DateCreated { get; set; }

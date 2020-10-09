@@ -4,30 +4,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lojax.Models
 {
-    [Table("category_products")] //renomear a tabela no banco
+    [Table("category_products")]
     public class Category
     {
         [Key]
-        [Column("id")] //renomear a tabela no banco.
+        [Column("id")]
         public int Id { get; set; }
 
-        [Column("company_id")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
+        //Id Empresa
+        [Column("company_id")]
         // [DataType("varchar")]
         public int CpnyId { get; set; }
 
-        [Column("company_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        //[Required(ErrorMessage = "Este campo é obrigatorio")]
+        //UID da Empresa. Utilizado para identificar o proprietário da categoria, por meio do uid_user que está presente no token. Mas a chave estrangeira é identificador a cima (CpnyId).
+        [Column("company_uid")]
         // [DataType("varchar")]
         public string CpnyUid { get; set; }
 
         [Column("desc")]
-        [Required(ErrorMessage = "Este campo é obrigatório")] //como tem MinLength não seria necessario
+        [Required(ErrorMessage = "Este campo é obrigatório")]
         [MaxLength(60, ErrorMessage = "Este campo deve conter entre 3 e 60 caracteres")]
         [MinLength(3, ErrorMessage = "Este campo deve conter entre 3 e 60 caracteres")]
         [DataType("varchar")]
         public string Desc { get; set; }
 
-        [Column("satus")] //0 Cancelado - 1 Ativo
+        //0 CANCELADO, 1 ATIVO
+        [Column("satus")]
         [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
         [DataType("int")]
         public int Status { get; set; }

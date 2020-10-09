@@ -4,33 +4,37 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lojax.Models
 {
-    [Table("orders")] //renomear a tabela no banco
+    [Table("orders")]
     public class Order
     {
         [Key]
-        [Column("id")] //renomear a tabela no banco.
+        [Column("id")]
         public int Id { get; set; }
 
 
         [Column("costumer_id")]
         public int CostumerId { get; set; }
 
-        [Column("costumer_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        //[Required(ErrorMessage = "Este campo é obrigatorio")]
+
+        //UID da Empresa. Utilizado para identificar o CLIENTE da venda, por meio do uid_user que está presente no token.
+        [Column("costumer_uid")]
         // [DataType("varchar")]
         public string CostumerUid { get; set; }
 
-        [Column("company_id")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
+
+        [Column("company_id")]
         // [DataType("varchar")]
         public int CpnyId { get; set; }
 
-        [Column("company_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        //[Required(ErrorMessage = "Este campo é obrigatorio")]
+
+        //UID da Empresa. Utilizado para identificar o VENDEDOR da venda, por meio do uid_user que está presente no token.
+        [Column("company_uid")]
         // [DataType("varchar")]
         public string CpnyUid { get; set; }
 
 
-        [Column("status")] //0 CANCELADO, 1 ATIVO
+        //0 CANCELADO, 1 ATIVO
+        [Column("status")]
         [Required(ErrorMessage = "Este campo é obrigatorio")]
         [DataType("int")]
         public int Status { get; set; }
@@ -59,12 +63,10 @@ namespace Lojax.Models
         public string Note { get; set; }
 
         [Column("date_created")]
-        [Required(ErrorMessage = "Obrigatório informar uma data.")]
         public DateTime DateOrder { get; set; }
 
 
         [Column("date_update")]
-        [Required(ErrorMessage = "Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
 

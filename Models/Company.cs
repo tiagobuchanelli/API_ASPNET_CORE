@@ -4,35 +4,35 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lojax.Models
 {
-    [Table("company")] //renomear a tabela no banco
+    [Table("company")]
     public class Company
     {
         [Key]
-        [Column("id")] //renomear a tabela no banco.
+        [Column("id")]
         public int Id { get; set; }
 
-        [Column("user_id")] //apenas para pode carregar o model do user
+        [Column("user_id")]
         public int UserId { get; set; }
 
-        [Column("company_uid")] //Não é obrigatório pois a API é quem identifica e grava o ID pelo token (uid do firebase)
-        //[Required(ErrorMessage = "Este campo é obrigatorio")]
+        //UID do Usuário. Utilizado para identificar o proprietário da Empresa, por meio do uid_user que está presente no token. Mas a chave estrangeira é identificador a cima (UserId).
+        [Column("company_uid")]
         // [DataType("varchar")]
         public string Uid { get; set; }
 
         [Column("name")]
         [Required(ErrorMessage = "Este campo é obrigatório")]
-        [MaxLength(20, ErrorMessage = "Este campo deve conter entre 3 e 20 caracteres")]
-        [MinLength(3, ErrorMessage = "Este campo deve conter entre 3 e 20 caracteres")]
+        [MaxLength(200, ErrorMessage = "Este campo deve conter entre 3 e 200 caracteres")]
+        [MinLength(3, ErrorMessage = "Este campo deve conter entre 3 e 200 caracteres")]
         [DataType("varchar")]
         public string Name { get; set; }
 
 
-        [Column("last_name")]
+        [Column("fantasy_name")]
         [Required(ErrorMessage = "Este campo é obrigatório")]
         [MaxLength(100, ErrorMessage = "Este campo deve conter entre 3 e 100 caracteres")]
         [MinLength(3, ErrorMessage = "Este campo deve conter entre 3 e 100 caracteres")]
         [DataType("varchar")]
-        public string LastName { get; set; }
+        public string FantasyName { get; set; }
 
 
         [Column("email")]
@@ -67,21 +67,20 @@ namespace Lojax.Models
         [DataType("varchar")]
         public string Phone { get; set; }
 
-        [Column("status")] //0 CANCELADO, 1 ATIVO
-        [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
+        //0 CANCELADO, 1 ATIVO
+        [Column("status")]
         [DataType("int")]
         public int Status { get; set; }
 
-        [Column("type_entity")] //1 CLIENTE, 2 FORNECEDOR, 3 OUTRS
+        //1 DEFAULT, 2 PREMIUM
+        [Column("type_entity")]
         [DataType("int")]
         public int EntityType { get; set; }
 
         [Column("date_created")]
-        [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
         public DateTime DateCreated { get; set; }
 
         [Column("date_update")]
-        [Required(ErrorMessage = "Status - Este campo é obrigatorio")]
         public DateTime DateUpdate { get; set; }
 
         public User User { get; set; }

@@ -217,9 +217,6 @@ namespace Lojax.Controllers
 
             try
             {
-                // //validar id produto passado
-                // if (id != model.Id)
-                //     return NotFound(new { message = "Agendamento não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)
@@ -266,9 +263,6 @@ namespace Lojax.Controllers
 
             try
             {
-                // //validar id produto passado
-                // if (id != model.Id)
-                //     return NotFound(new { message = "Agendamento não encontrado." });
 
                 //Valida model
                 if (!ModelState.IsValid)
